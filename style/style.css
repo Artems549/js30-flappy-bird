@@ -3,3 +3,105 @@
     padding: 0;
     box-sizing: border-box;
 }
+body {
+    background-color: rgb(38 38 38);
+}
+
+
+.wrapper {
+    max-width: 360px;
+    margin: 0 auto;
+}
+.header__wrapper {
+    background-color: #756f6f;
+    padding: 20px 10px 20px 10px;
+    border-radius: 15px;
+    margin: 10px 0px 10px 0px;
+}
+.header__title h1 {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 30px;
+    line-height: 120%;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 10px;
+    color: white;
+}
+.header__score p {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 20px;
+    line-height: 120%;
+    font-weight: 400;
+    text-align: center;
+    color: white;
+}
+/* .header__best-score-p {
+    height: 0px;
+    overflow: hidden;
+    transition: 0.5s ease-out;
+}
+.active__best-score {
+    height: 240px;
+} */
+
+
+
+#main__canvas {
+    width: 360px;
+    height: 640px;
+    border-radius: 15px;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+footer {
+    width: 100%;
+    z-index: 100;
+}
+.footer__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 00px 10px 00px
+}
+.footer__item:nth-child(1) a svg,
+.footer__item:nth-child(3) a svg {
+    fill: #FFF;
+    height: auto;
+    transition: 0.1s linear;
+}
+.footer__item:nth-child(1) a svg {
+    width: 60px;
+}
+.footer__item:nth-child(3) a svg {
+    width: 80px;
+}
+.footer__item:nth-child(1) a svg:hover,
+.footer__item:nth-child(3) a svg:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+}
+.footer__item:nth-child(2) p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    line-height: 110%;
+    color: white;
+    font-weight: 900;
+    letter-spacing: 5px;
+    margin-left: 20px;
+}
