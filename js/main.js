@@ -1,6 +1,7 @@
 let canvas = document.getElementById('main__canvas');
 let context = canvas.getContext('2d');
-let score = document.querySelector('.header__score p');
+let scoreField = document.querySelector('.header__score p');
+let counter = 0;
 
 
 const world = {
@@ -8,6 +9,7 @@ const world = {
     y: 0,
     width: 360,
     height: 640,
+    score: 0,
     img: new Image(),
     renderWorld() {
         context.drawImage(world.img, world.x, world.y, world.width, world.height)
@@ -25,38 +27,68 @@ const bird = {
         context.drawImage(this.img, this.x, this.y, this.width, this.height)
     },
 }
+class columns {
+    constructor(x) {
+        this.x = x;
+        this.y = -260;
+        this.width = 64;
+        this.height = 400;
+        this.gap = 100;
+        this.speed = 4;
+        this.columnUp = new Image();
+        this.columnDown = new Image();
+        this.columnUp.src = '../img/column-up.png';
+        this.columnDown.src = '../img/column-down.png';
+    }
 
-const columns = {
-    x: 160,
-    y: -260,
-    width: 64,
-    height: 400,
-    gap: 100,
-    speed: 1,
-    columnUp: new Image(),
-    columnDown: new Image(),
     drawColumns() {
-        context.drawImage(this.columnUp, this.x, this.y, this.width, this.height)
-        context.drawImage(this.columnDown, this.x, this.y + this.height + columns.gap, columns.width, this.height)
-
+        context.drawImage(this.columnUp, this.x, this.y, this.width, this.height);
+        context.drawImage(this.columnDown, this.x, this.y + this.height + this.gap, this.width, this.height);
     }
 }
-
+scoreField.innerHTML = world.score;
 canvas.width = world.width;
 canvas.height = world.height;
 world.img.src = '../img/world.png';
 bird.img.src = '../img/bird.png';
-columns.columnUp.src = '../img/column-up.png';
-columns.columnDown.src = '../img/column-down.png';
 
 
+const columnsMove = [new columns(world.width), new columns(world.width + 230)];
+
+console.log(columnsMove[0].x)
 function renderGame() {
-
     world.renderWorld();
     bird.renderBird()
-    columns.drawColumns()
+
+    columnsMove.forEach((column,i) => {
+        column.x -= column.speed
+        column.drawColumns()
+
+        if(column.x < column.width * -1) {
+            setNewElement(column)
+            upDateScore()
+        }
+        
+        if(world.score === 10) {
+            console.log('You win!!!')
+        }
+    })
 
 
+
+
+
+
+    requestAnimationFrame(renderGame)
 }
-setInterval(renderGame, 1000/60)
-// requestAnimationFrame(renderGame)
+requestAnimationFrame(renderGame)
+
+
+function setNewElement(column) {
+    column.x = world.width + 50;
+    column.y = Math.random() * -260 + 0;
+}
+function upDateScore() {
+    world.score += 1;
+    scoreField.innerHTML = world.score
+}
