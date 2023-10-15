@@ -48,7 +48,7 @@ body {
 
 #main__canvas {
     border-radius: 15px;
-    background: url('../img/bg.png') no-repeat;
+    /* width: 360px; */
 }
 
 
