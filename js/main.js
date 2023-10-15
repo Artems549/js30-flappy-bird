@@ -12,6 +12,7 @@ const world = {
     score: 0,
     img: new Image(),
     renderWorld() {
+        world.im
         context.drawImage(world.img, world.x, world.y, world.width, world.height)
     },
 }
@@ -51,8 +52,8 @@ class columns {
 scoreField.innerHTML = world.score;
 canvas.width = world.width;
 canvas.height = world.height;
-world.img.src = '../img/world.png';
-bird.img.src = '../img/bird.png';
+world.img.src = './img/world.png';
+bird.img.src = './img/bird.png';
 
 
 const columnsMove = [new columns(world.width), new columns(world.width + 230)];
