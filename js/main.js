@@ -40,8 +40,8 @@ class columns {
         this.speed = 2;
         this.columnUp = new Image();
         this.columnDown = new Image();
-        this.columnUp.src = '../img/column-up.png';
-        this.columnDown.src = '../img/column-down.png';
+        this.columnUp.src = './img/column-up.png';
+        this.columnDown.src = './img/column-down.png';
     }
 
     drawColumns() {
