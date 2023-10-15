@@ -13,13 +13,30 @@ const world = {
         context.drawImage(world.img, world.x, world.y, world.width, world.height)
     },
 }
+
+
+const bird = {
+    x: 50,
+    y: world.height / 2 - 25,
+    width: 34,
+    height: 24,
+    img: new Image(),
+    renderBird() {
+        context.drawImage(this.img, this.x, this.y, this.width, this.height)
+    },
+}
+
 canvas.width = world.width;
-canvas.height = world.height
-world.img.src = '../img/world.png'
+canvas.height = world.height;
+world.img.src = '../img/world.png';
+bird.img.src = '../img/bird.png';
+
+
 
 function renderGame() {
 
     world.renderWorld();
+    bird.renderBird()
 
 
 
