@@ -2,8 +2,8 @@ let canvas = document.getElementById('main__canvas');
 let context = canvas.getContext('2d');
 let scoreField = document.querySelector('.header__score p');
 let counter = 0;
-
-
+let animation;
+let isBirdGravity = true;
 const world = {
     x: 0,
     y: 0,
@@ -23,6 +23,7 @@ const bird = {
     width: 44,
     height: 34,
     gravity: 0.25,
+    boost: 0.3,
     img: new Image(),
     renderBird() {
         context.drawImage(this.img, this.x, this.y, this.width, this.height)
@@ -34,8 +35,8 @@ class columns {
         this.y = -260;
         this.width = 64;
         this.height = 400;
-        this.gap = 100;
-        this.speed = 4;
+        this.gap = 150;
+        this.speed = 2;
         this.columnUp = new Image();
         this.columnDown = new Image();
         this.columnUp.src = '../img/column-up.png';
@@ -60,31 +61,33 @@ console.log(columnsMove[0].x)
 function renderGame() {
     world.renderWorld();
     bird.renderBird()
-    bird.gravity += 0.3
-    bird.y += bird.gravity;
-    columnsMove.forEach(column => {
+    birdGravity()
+    columnsMove.forEach((column,i) => {
         column.x -= column.speed
         column.drawColumns()
 
         if(column.x < column.width * -1) {
             setNewElement(column)
             upDateScore()
+            
         }
         
         if(world.score === 10) {
             console.log('You win!!!')
         }
+        gameOver(column)
     })
 
     document.addEventListener('keydown', jumpBird)
 
 
+    animation = requestAnimationFrame(renderGame)
 
+    
 
-
-    requestAnimationFrame(renderGame)
 }
-requestAnimationFrame(renderGame)
+
+animation = requestAnimationFrame(renderGame)
 
 
 function setNewElement(column) {
@@ -99,5 +102,32 @@ function upDateScore() {
 function jumpBird(e) {
     if(e.keyCode == 38 || e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 18) {
         bird.gravity =  -5
+    }
+}
+
+function gameOver(column, i) {
+    if((column.x < bird.x + bird.width && bird.y < column.y + column.height) ||
+       (column.x < bird.x + bird.width && bird.y + bird.height > column.y + column.height + column.gap)) {
+        if(column.x + column.width < bird.x) {
+            console.log('return')
+            return
+        }
+        columnsMove[1].speed = 0;
+        columnsMove[0].speed = 0;
+        isBirdGravity = false;
+    }
+    if(bird.y < 0 || bird.y + bird.height > world.height - 70) {
+        columnsMove[1].speed = 0;
+        columnsMove[0].speed = 0;
+        isBirdGravity = false;
+
+    }
+
+}
+
+function birdGravity() {
+    if(isBirdGravity) {
+        bird.gravity += bird.boost
+        bird.y += bird.gravity;
     }
 }
