@@ -22,6 +22,7 @@ const bird = {
     y: world.height / 2 - 25,
     width: 44,
     height: 34,
+    gravity: 0.25,
     img: new Image(),
     renderBird() {
         context.drawImage(this.img, this.x, this.y, this.width, this.height)
@@ -59,8 +60,9 @@ console.log(columnsMove[0].x)
 function renderGame() {
     world.renderWorld();
     bird.renderBird()
-
-    columnsMove.forEach((column,i) => {
+    bird.gravity += 0.3
+    bird.y += bird.gravity;
+    columnsMove.forEach(column => {
         column.x -= column.speed
         column.drawColumns()
 
@@ -74,6 +76,7 @@ function renderGame() {
         }
     })
 
+    document.addEventListener('keydown', jumpBird)
 
 
 
@@ -91,4 +94,10 @@ function setNewElement(column) {
 function upDateScore() {
     world.score += 1;
     scoreField.innerHTML = world.score
+}
+
+function jumpBird(e) {
+    if(e.keyCode == 38 || e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 18) {
+        bird.gravity =  -5
+    }
 }
