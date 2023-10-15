@@ -4,6 +4,33 @@ let scoreField = document.querySelector('.header__score p');
 let counter = 0;
 let animation;
 let isBirdGravity = true;
+let bestScoreBtn = document.querySelector('.header__modals-modal-score-btn button');
+let bestScoreText = document.querySelector('.header__modals-modal-score-text');
+let settingBtn = document.querySelector('.header__modals-modal-setting-img img');
+let settingSet = document.querySelector('.header__modals-modal-settings')
+let settingSpeedInput = document.querySelector('.header__modals-modal-settings-speed input');
+let settingSpeedBtn = document.querySelector('.header__modals-modal-settings-btn');
+let modalGameOver = document.querySelector('.modals-modal__game-over');
+let restartBtn = document.querySelector('.modals-modal__game-over button');
+const bestResult = []
+
+canvas.addEventListener('click', function() {
+    bestScoreText.classList.remove('active-text')
+
+    settingSet.classList.remove('active-set')
+})
+bestScoreBtn.addEventListener('click', function() {
+    bestScoreText.classList.toggle('active-text')
+})
+settingBtn.addEventListener('click', function() {
+    settingSet.classList.toggle('active-set');
+})
+
+
+
+
+
+
 const world = {
     x: 0,
     y: 0,
@@ -37,7 +64,7 @@ class columns {
         this.width = 64;
         this.height = 400;
         this.gap = 150;
-        this.speed = 2;
+        this.speed = settingSpeedInput.value;
         this.columnUp = new Image();
         this.columnDown = new Image();
         this.columnUp.src = './img/column-up.png';
@@ -54,7 +81,9 @@ canvas.width = world.width;
 canvas.height = world.height;
 world.img.src = './img/world.png';
 bird.img.src = './img/bird.png';
-
+settingSpeedBtn.addEventListener('click', function() {
+    columns.speed = settingSpeedInput.value
+})
 
 const columnsMove = [new columns(world.width), new columns(world.width + 230)];
 
@@ -81,10 +110,8 @@ function renderGame() {
 
     document.addEventListener('keydown', jumpBird)
 
-
-    animation = requestAnimationFrame(renderGame)
-
     
+    animation = requestAnimationFrame(renderGame)
 
 }
 
@@ -116,11 +143,13 @@ function gameOver(column, i) {
         columnsMove[1].speed = 0;
         columnsMove[0].speed = 0;
         isBirdGravity = false;
+        modalGameOver.classList.add('active-game-over')
     }
-    if(bird.y < 0 || bird.y + bird.height > world.height - 70) {
+    if(bird.y < 0 || bird.y + bird.height > 570) {
         columnsMove[1].speed = 0;
         columnsMove[0].speed = 0;
         isBirdGravity = false;
+        modalGameOver.classList.add('active-game-over')
 
     }
 
@@ -132,3 +161,19 @@ function birdGravity() {
         bird.y += bird.gravity;
     }
 }
+function restartGame(e) {
+    bird.y = world.height / 2 - 25;
+    columnsMove[0] = new columns(world.width);
+    columnsMove[1] = new columns(world.width + 230);
+    columnsMove[0].speed = settingSpeedInput.value;
+    columnsMove[1].speed = settingSpeedInput.value;
+    modalGameOver.classList.remove('active-game-over');
+    isBirdGravity = true;
+    bird.gravity = 0.25;
+    
+    bestResult.push(world.score);
+    world.score = 0;
+    
+    console.log(bestResult)
+}
+restartBtn.addEventListener('click', restartGame)
