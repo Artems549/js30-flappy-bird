@@ -54,7 +54,7 @@
                     </div>
                     <div class="modals-modal__game-over">
                         <h1>Game Over</h1>
-                        <button>Restart</button>
+                        <button class="restart">Заново</button>
                     </div>
                        
 
@@ -66,7 +66,33 @@
     <main>
         <div class="wrapper">
             <div class="main__wrapper">
-                <canvas id="main__canvas"></canvas>
+                <div class="main__wrapper-canvas">
+                    <canvas id="main__canvas"></canvas>
+                    <div class="main__start">
+                        <div class="main__start-title">
+                            <h1>Flappy bird</h1>
+                        </div>
+                        <div class="main__start-text">
+                            <p>Управление осуществляется при помощи кнопок: enter, space, ↑, w и по клику левой кнопкой мыши</p>
+                            <p>Так же вы можете изменить скорость в настройках</p>
+                            <p>Приятной игры</p>
+
+                            <button>Начать</button>
+                        </div>
+                    </div>
+                    <div class="main__win">
+                        <div class="main__win-title">
+                            <h1>Поздравляю</h1>
+                            <h1>вы выиграли</h1>
+                        </div>
+                        <div class="main__win-text">
+                            <p>Результат 10</p>
+
+                            <button class="restart">Заново</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
