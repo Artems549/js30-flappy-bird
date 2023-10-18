@@ -1,11 +1,11 @@
 let canvas = document.getElementById('main__canvas');
 let context = canvas.getContext('2d');
 let scoreField = document.querySelector('.header__score p');
-let isBirdGravity = true;
 let bestScoreBtn = document.querySelector('.header__modals-modal-score-btn button');
 let bestScoreText = document.querySelector('.header__modals-modal-score-text');
+let bestScoreResults = document.querySelectorAll('.header__modals-modal-score-text p');
 let settingBtn = document.querySelector('.header__modals-modal-setting-img img');
-let settingSet = document.querySelector('.header__modals-modal-settings')
+let settingSet = document.querySelector('.header__modals-modal-settings');
 let settingSpeedInput = document.querySelector('.header__modals-modal-settings-speed input');
 let settingSpeedBtn = document.querySelector('.header__modals-modal-settings-btn');
 let modalGameOver = document.querySelector('.modals-modal__game-over');
@@ -14,9 +14,10 @@ let startGameModal = document.querySelector('.main__start')
 let startGameBtn = document.querySelector('.main__start-text button');
 let winModal = document.querySelector('.main__win');
 let resultWinner = document.querySelector('.main__win-text p');
+let maxScore = 15;
+let isBirdGravity = true;
+let interationCount = 0;
 const bestResult = []
-
-
 
 
 const world = {
@@ -27,7 +28,7 @@ const world = {
     score: 0,
     img: new Image(),
     renderWorld() {
-        world.im
+
         context.drawImage(world.img, world.x, world.y, world.width, world.height)
     },
 }
@@ -78,16 +79,14 @@ bestScoreBtn.addEventListener('click', function() {
 settingBtn.addEventListener('click', function() {
     settingSet.classList.toggle('active-set');
 })
-
 settingSpeedBtn.addEventListener('click', function() {
-    columns.speed = settingSpeedInput.value
+    columns.speed = settingSpeedInput.value;
+    settingSet.classList.remove('active-set');
+
+
 })
 
 const columnsMove = [new columns(world.width), new columns(world.width + 230)];
-
-
-
-
 
 function startGame() {
     startGameBtn.addEventListener('click', function() {
@@ -101,39 +100,36 @@ function startGame() {
             columnsMove.forEach((column,i) => {
                 column.x -= column.speed
                 column.drawColumns()
-                if(column.x < column.width * -1) {
-                    setNewElement(column)
-                    upDateScore()
-                }
-                if(world.score === 10) {
-                    console.log('You win!!!')
-                }
+
+                setNewElement(column)
+                upDateScore(column)
+
                 gameOver(column)
             })
+            winGame()
+
             document.addEventListener('keydown', jumpBird)
-            canvas.addEventListener('click', jumpBirdOnClick)
+            document.addEventListener('click', jumpBirdOnClick)
             requestAnimationFrame(renderGame)
-            if(world.score == 1) {
-                stopBirdAndWorld()
-                winModal.style.display = 'flex'
-            }
         }
         requestAnimationFrame(renderGame)
-
     })
 
 }
-startGame()
 function setNewElement(column) {
-    column.x = world.width + 50;
-    column.y = Math.random() * -260 + 0;
+    if(column.x < column.width * -1) {
+        column.x = world.width + 50;
+        column.y = Math.random() * -260 + 0;
+    }
 }
-function upDateScore() {
-    world.score += 1;
-    scoreField.innerHTML = world.score
+function upDateScore(column) {
+    if(column.x + column.width == bird.x && world.score !== maxScore) {
+        world.score += 1;
+        scoreField.innerHTML = world.score
+    }
 }
 function jumpBird(e) {
-    if(e.keyCode == 38 || e.keyCode == 32 || e.keyCode == 87 || e.keyCode == 18) {
+    if(e.keyCode == 38 || e.keyCode == 87) {
         bird.gravity =  -5
     }
 }
@@ -147,11 +143,13 @@ function gameOver(column, i) {
             return
         }
         stopBirdAndWorld()
+        collectResults()
         modalGameOver.classList.add('active-game-over')
-
     }
     if(bird.y < 0 || bird.y + bird.height > 570) {
-        stopBirdAndWorld()
+        stopBirdAndWorld();
+        collectResults()
+        modalGameOver.classList.add('active-game-over')
     }
 }
 function stopBirdAndWorld() {
@@ -166,24 +164,28 @@ function birdGravity() {
     }
 }
 function restartGame(e) {
-    bestScoreText.classList.remove('active-text')
-    settingSet.classList.remove('active-set')
+    bestScoreText.classList.remove('active-text');
+    settingSet.classList.remove('active-set');
+    modalGameOver.classList.remove('active-game-over');
     bird.y = world.height / 2 - 25;
     columnsMove[0] = new columns(world.width);
     columnsMove[1] = new columns(world.width + 230);
     columnsMove[0].speed = settingSpeedInput.value;
     columnsMove[1].speed = settingSpeedInput.value;
-    modalGameOver.classList.remove('active-game-over');
     isBirdGravity = true;
-    bird.gravity = 0.25;
-    bestResult.push(world.score);
     world.score = 0;
+    interationCount = 0;
+    scoreField.innerHTML = world.score;
 }
-
-
-
-
-function restartGameBtn() {
+function winGame() {
+    if(world.score === maxScore) {
+        stopBirdAndWorld()
+        collectResults()
+        resultWinner.innerHTML = `Результат: ${world.score}`
+        winModal.style.display = 'flex';
+    }
+}
+function restartGameBtn(e) {
     for(let i = 0; i < restartBtn.length; i++) {
         restartBtn[i].addEventListener('click', function() {
             restartGame();
@@ -192,4 +194,24 @@ function restartGameBtn() {
     }
 
 }
+function collectResults() {
+    if(bestResult.length < 10 && interationCount === 0) {
+        bestResult.push(world.score)
+        bestResult.sort((a, b) => b - a);
+        for(let i = 0; i < bestResult.length; i++){
+            localStorage.setItem(`result ${i+1}`, bestResult[i]);
+            bestScoreResults[i].innerHTML = `${i+1}. ${bestResult[i]}`;
+        }
+        interationCount++
+    }
+}
+function renderResultFromLocal() {
+    if(localStorage.getItem('result 1') !== null) {
+        for(let i= 0; i < 10; i++) {
+            bestScoreResults[i].innerHTML = `${i+1}. ${localStorage.getItem(`result ${i+1}`)}`
+        }
+    } 
+}
+startGame()
 restartGameBtn()
+renderResultFromLocal()
