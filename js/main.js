@@ -16,7 +16,8 @@ let winModal = document.querySelector('.main__win');
 let resultWinner = document.querySelector('.main__win-text p');
 let maxScore = 15;
 let isBirdGravity = true;
-let interationCount = 0;
+let iterationCount = 0;
+let isCanUpDate = true;
 const bestResult = []
 
 
@@ -82,8 +83,6 @@ settingBtn.addEventListener('click', function() {
 settingSpeedBtn.addEventListener('click', function() {
     columns.speed = settingSpeedInput.value;
     settingSet.classList.remove('active-set');
-
-
 })
 
 const columnsMove = [new columns(world.width), new columns(world.width + 230)];
@@ -101,8 +100,9 @@ function startGame() {
                 column.x -= column.speed
                 column.drawColumns()
 
-                setNewElement(column)
                 upDateScore(column)
+                setNewElement(column)
+
 
                 gameOver(column)
             })
@@ -120,12 +120,14 @@ function setNewElement(column) {
     if(column.x < column.width * -1) {
         column.x = world.width + 50;
         column.y = Math.random() * -260 + 0;
+        isCanUpDate = true;
     }
 }
 function upDateScore(column) {
-    if(column.x + column.width == bird.x && world.score !== maxScore) {
+    if(column.x + column.width < bird.x && world.score !== maxScore && isCanUpDate) {
         world.score += 1;
         scoreField.innerHTML = world.score
+        isCanUpDate = false
     }
 }
 function jumpBird(e) {
@@ -174,7 +176,7 @@ function restartGame(e) {
     columnsMove[1].speed = settingSpeedInput.value;
     isBirdGravity = true;
     world.score = 0;
-    interationCount = 0;
+    iterationCount = 0;
     scoreField.innerHTML = world.score;
 }
 function winGame() {
@@ -195,14 +197,14 @@ function restartGameBtn(e) {
 
 }
 function collectResults() {
-    if(bestResult.length < 10 && interationCount === 0) {
+    if(bestResult.length < 10 && iterationCount === 0) {
         bestResult.push(world.score)
         bestResult.sort((a, b) => b - a);
         for(let i = 0; i < bestResult.length; i++){
             localStorage.setItem(`result ${i+1}`, bestResult[i]);
             bestScoreResults[i].innerHTML = `${i+1}. ${bestResult[i]}`;
         }
-        interationCount++
+        iterationCount++
     }
 }
 function renderResultFromLocal() {
